@@ -1,12 +1,15 @@
 <div class="max-w-sm rounded overflow-hidden shadow-lg bg-gray-800">
   <div class="px-6 py-4">
-    <div class="font-bold text-xl mb-2 text-green-400">{{ server.name }} (ID: {{ server.id }})</div>
+    <div class="mb-4">
+      <div class="font-bold text-xl text-green-400">{{ server.name }}</div>
+      <div class="text-sm text-blue-500">(ID: {{ server.id }})</div>
+    </div>
     <p class="text-green-200 text-base">
-      Type: <span class="text-white">{{ server.type }}</span>
+      Provider: <span class="text-white">{{ server.provider }}</span>
     </p>
 
     <!-- Proxmox instance details -->
-    <ng-container *ngIf="server.type === 'proxmox'">
+    <ng-container *ngIf="server.provider === 'proxmox'">
       <p class="text-green-200 text-base">
         IP: <span class="text-white">{{ server.ip }}</span>
       </p>
@@ -28,7 +31,7 @@
     </ng-container>
 
     <!-- AWS instance details -->
-    <ng-container *ngIf="server.type === 'aws'">
+    <ng-container *ngIf="server.provider === 'aws'">
       <p class="text-green-200 text-base">
         Private IP: <span class="text-white">{{ server.private_ip }}</span>
       </p>
@@ -53,25 +56,25 @@
     </ng-container>
   </div>
 
-  <button
-    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
-    (click)="deleteServer(server.name, server.type)"
-    [disabled]="serverService.getServerLoadingStatus(server.name)">
-    <span [class.hidden]="serverService.getServerLoadingStatus(server.name)">Delete</span>
-
-    <div
-      [class.hidden]="!serverService.getServerLoadingStatus(server.name)"
-      class="spinner-border animate-spin inline-block w-4 h-4 border-4 rounded-full"
-      role="status">
-    </div>
-  </button>
-
-  <button
-    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
-    (click)="openConfigurationPanel()"
-    [disabled]="serverService.getServerLoadingStatus(server.name)">
-    Configure
-  </button>
+  <div class="flex space-x-4 mt-4">
+    <button
+      class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      (click)="deleteServer(server.name, server.provider)"
+      [disabled]="serverService.getServerLoadingStatus(server.name)">
+      <span [class.hidden]="serverService.getServerLoadingStatus(server.name)">Delete</span>
+      <div
+        [class.hidden]="!serverService.getServerLoadingStatus(server.name)"
+        class="spinner-border animate-spin inline-block w-4 h-4 border-4 rounded-full"
+        role="status">
+      </div>
+    </button>
+    <button
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      (click)="openConfigurationPanel()"
+      [disabled]="serverService.getServerLoadingStatus(server.name)">
+      Configure
+    </button>
+  </div>
 
 </div>
 

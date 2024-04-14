@@ -19,7 +19,8 @@ export class ProxmoxFormComponent implements OnInit{
   proxmoxForm: FormGroup = new FormGroup({});
 
   constructor(private validatorService : ValidatorsService,
-              private serverService : ServerService) {
+              private serverService : ServerService
+              ) {
 
   }
 

@@ -20,7 +20,7 @@ export class InfrastructurePageComponent {
   }
 
   constructor(protected serverService: ServerService) { }
-  @Input() server: any; // Assure-toi que le serveur est passé en input
+  @Input() server: any; // Le serveur à afficher
   @Output() closeRequest = new EventEmitter();
 
   close() {

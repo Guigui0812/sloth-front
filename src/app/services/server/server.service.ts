@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import {first} from "rxjs";
+import {Router} from "@angular/router";
 
 
 
@@ -36,7 +38,9 @@ export class ServerService {
   }
 
 
-  constructor (private http: HttpClient) {
+  constructor (private http: HttpClient,
+               private router: Router
+               ) {
 
     this.refreshServerArray();
   }
@@ -54,10 +58,12 @@ export class ServerService {
    * Refresh the server array
    */
   refreshServerArray() {
-    this.http.get('http://127.0.0.1:8000/sloth/instances').subscribe((servers: any) => {
-      this.serverArray = servers;
-      this.serverLoadingStatus = servers.map((server: any) => ({ name: server.name, loading: false }));
-    });
+    this.http.get('http://127.0.0.1:8000/sloth/instances')
+      .pipe(first())
+      .subscribe((servers: any) => {
+        this.serverArray = servers;
+        this.serverLoadingStatus = servers.map((server: any) => ({ name: server.name, loading: false }));
+      });
   }
 
   /**
@@ -102,7 +108,7 @@ export class ServerService {
    * Add a Proxmox server
    * @param serverData
    */
-  addProxmoxServer(serverData: any) {
+addProxmoxServer(serverData: any) {
     let server = {
       //type: "proxmox",
       name: serverData.serverName,
@@ -115,25 +121,30 @@ export class ServerService {
       iothread: "true",
       discard: "on",
       size: serverData.diskSize,
-      cores : serverData.cpu,
+      cores: serverData.cpu,
       memory: serverData.cpu,
       ipAddress: this._prefixIp + serverData.ipAddress,
     };
 
     let response = null;
 
-    try {
-      response = this.http.post('http://127.0.0.1:8000/sloth/instances/proxmox', server).subscribe(() => {
-        this.refreshServerArray();
+    this.http.post('http://127.0.0.1:8000/sloth/instances/proxmox', server)
+      .pipe(first())
+      .subscribe({
+        next: () => {
+          this.refreshServerArray();
+          console.log('Instance added successfully on proxmox.');
+          alert('Proxmox instance added successfully!');
+          this.router.navigate(['/infrastructure-page']);
+        },
+        error: () => {
+          console.error('Error adding instance on proxmox');
+          alert('Error adding instance on proxmox');
+        }
       });
-      console.log('Server added successfully');
-    } catch (error) {
-      console.error('Error adding server');
-    }
 
     return response;
   }
-
   /**
    * Add an AWS server
    * @param serverData
@@ -150,14 +161,21 @@ export class ServerService {
 
     let response = null;
 
-    try {
-      response = this.http.post('http://127.0.0.1:8000/sloth/instances/aws', server).subscribe(() => {
-        this.refreshServerArray();
+    response = this.http.post('http://127.0.0.1:8000/sloth/instances/aws', server)
+      .pipe(first())
+      .subscribe({
+        next: () => {
+          this.refreshServerArray();
+          console.log('Instance added successfully on AWS.');
+          alert('AWS instance added successfully!');
+          this.router.navigate(['/infrastructure-page']);
+        },
+        error: () => {
+          console.error('Error adding instance on AWS');
+          alert('Error adding instance on AWS');
+        }
       });
-      console.log('AWS instance added successfully');
-    } catch (error) {
-      console.error('Error adding AWS instance');
-    }
+
     return response;
   }
 
@@ -173,9 +191,13 @@ export class ServerService {
         next: () => {
           server.loading = false;
           this.refreshServerArray();
+          console.log('Instance deleted successfully on proxmox.');
+          alert('Proxmox instance deleted successfully!');
         },
         error: () => {
           server.loading = false;
+          console.error('Error deleting instance on proxmox');
+          alert('Error deleting instance on proxmox');
         }
       });
     }
@@ -189,15 +211,21 @@ export class ServerService {
     const server = this.serverLoadingStatus.find((s) => s.name === serverName);
     if (server) {
       server.loading = true;
-      this.http.delete(`http://127.0.0.1:8000/sloth/instances/aws/${serverName}`).subscribe({
-        next: () => {
-          server.loading = false;
-          this.refreshServerArray();
-        },
-        error: () => {
-          server.loading = false;
-        }
-      });
+      this.http.delete(`http://127.0.0.1:8000/sloth/instances/aws/${serverName}`)
+        .pipe(first())
+          .subscribe({
+            next: () => {
+              server.loading = false;
+              this.refreshServerArray();
+              console.log('Instance deleted successfully on AWS.');
+              alert('AWS instance deleted successfully!');
+            },
+            error: () => {
+              server.loading = false;
+              console.error('Error deleting instance on AWS');
+              alert('Error deleting instance on AWS');
+            }
+          });
     }
   }
 
@@ -215,14 +243,14 @@ export class ServerService {
    * Get the servers sorted by provider
    */
   getServersSortedByProvider(): any[] {
-    return this.getServers().sort((a, b) => a.type.localeCompare(b.type));
+    return this.getServers().sort((a, b) => a.provider.localeCompare(b.provider));
   }
 
   /**
    * Get the servers Filtered by provider
    */
   getServersFilteredByProvider(provider: string): any[] {
-    return this.getServers().filter(server => server.type === provider);
+    return this.getServers().filter(server => server.provider === provider);
   }
 
 
