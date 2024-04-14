@@ -1,9 +1,12 @@
 <div class="max-w-sm rounded overflow-hidden shadow-lg bg-gray-800">
-    <div class="px-6 py-4">
-      <div class="font-bold text-xl mb-2 text-green-400">{{ server.name }} (ID: {{ server.id }})</div>
-      <p class="text-green-200 text-base">
-        Type: <span class="text-white">{{ server.type }}</span>
-      </p>
+  <div class="px-6 py-4">
+    <div class="font-bold text-xl mb-2 text-green-400">{{ server.name }} (ID: {{ server.id }})</div>
+    <p class="text-green-200 text-base">
+      Type: <span class="text-white">{{ server.type }}</span>
+    </p>
+
+    <!-- Proxmox instance details -->
+    <ng-container *ngIf="server.type === 'proxmox'">
       <p class="text-green-200 text-base">
         IP: <span class="text-white">{{ server.ip }}</span>
       </p>
@@ -22,22 +25,53 @@
       <p class="text-green-200 text-base">
         Bridge Name: <span class="text-white">{{ server.bridge_name }}</span>
       </p>
-    </div>
+    </ng-container>
 
-    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
+    <!-- AWS instance details -->
+    <ng-container *ngIf="server.type === 'aws'">
+      <p class="text-green-200 text-base">
+        Private IP: <span class="text-white">{{ server.private_ip }}</span>
+      </p>
+      <p class="text-green-200 text-base">
+        Public IP: <span class="text-white">{{ server.public_ip }}</span>
+      </p>
+      <p class="text-green-200 text-base">
+        Instance Type: <span class="text-white">{{ server.instance_type }}</span>
+      </p>
+      <p class="text-green-200 text-base">
+        CPU Count: <span class="text-white">{{ server.cpu_count }}</span>
+      </p>
+      <p class="text-green-200 text-base">
+        Availability Zone: <span class="text-white">{{ server.availability_zone }}</span>
+      </p>
+      <p class="text-green-200 text-base">
+        Disk Size: <span class="text-white">{{ server.disk_size }}</span>
+      </p>
+      <p class="text-green-200 text-base">
+        AMI: <span class="text-white">{{ server.ami }}</span>
+      </p>
+    </ng-container>
+  </div>
+
+  <button
+    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
     (click)="deleteServer(server.name, server.type)"
     [disabled]="serverService.getServerLoadingStatus(server.name)">
-<span [class.hidden]="serverService.getServerLoadingStatus(server.name)">Delete</span>
+    <span [class.hidden]="serverService.getServerLoadingStatus(server.name)">Delete</span>
 
-<div [class.hidden]="!serverService.getServerLoadingStatus(server.name)" 
-   class="spinner-border animate-spin inline-block w-4 h-4 border-4 rounded-full" role="status">
-</div>
-</button>
+    <div
+      [class.hidden]="!serverService.getServerLoadingStatus(server.name)"
+      class="spinner-border animate-spin inline-block w-4 h-4 border-4 rounded-full"
+      role="status">
+    </div>
+  </button>
 
-<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
-(click)="openConfigurationPanel()"
-[disabled]="serverService.getServerLoadingStatus(server.name)">Configure
-</button>
+  <button
+    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
+    (click)="openConfigurationPanel()"
+    [disabled]="serverService.getServerLoadingStatus(server.name)">
+    Configure
+  </button>
 
 </div>
 

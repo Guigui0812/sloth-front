@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ServerService } from '../../services/server.service';
+import { ServerService } from '../../services/server/server.service';
 import { NgIf } from '@angular/common';
 import {ServerConfigureComponent} from '../server-configure/server-configure.component';
 
@@ -17,7 +17,7 @@ export class ServerInfosComponent {
   openConfigurationPanel() {
     this.isConfigPanelOpen = true;
   }
-  
+
   closePanel() {
     this.isConfigPanelOpen = false;
   }
@@ -27,8 +27,13 @@ export class ServerInfosComponent {
 
   constructor(protected serverService: ServerService) { }
 
-  deleteServer(serverName: string, serverType: string) {
-    this.serverService.deleteServers(serverName, serverType);
+  /**
+   * Delete a server
+   * @param serverName
+   * @param serverProvider
+   */
+  deleteServer(serverName: string, serverProvider: string) {
+    this.serverService.deleteServers(serverName, serverProvider);
   }
 
 }
