@@ -3,6 +3,7 @@ import { ServerInfosComponent } from '../server-infos/server-infos.component';
 import {NgFor, NgIf} from '@angular/common';
 import { ServerService } from '../../services/server/server.service';
 import {FormsModule} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-infrastructure-page',
@@ -19,11 +20,19 @@ export class InfrastructurePageComponent {
     this._filteredProvider = target.provider;
   }
 
-  constructor(protected serverService: ServerService) { }
+  constructor(
+    protected serverService: ServerService,
+    protected router: Router
+    ) { }
   @Input() server: any; // Le serveur à afficher
   @Output() closeRequest = new EventEmitter();
 
   close() {
     this.closeRequest.emit();
+  }
+
+  onConfigureServer(server: any) {
+    this.serverService.setSelectedServer(server);
+    this.router.navigate(['/server-details']);
   }
 }

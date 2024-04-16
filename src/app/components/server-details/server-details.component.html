@@ -1,0 +1,24 @@
+<div class="dashboard">
+  <!-- Left panel -->
+  <div class="left-panel">
+    <h2>Caractéristiques de l'instance</h2>
+    <p>Nom de l'instance : {{server.name}}</p>
+    <p>Type de l'instance : {{server.type}}</p>
+    <p>IP de l'instance : {{server.ipAddress}}</p>
+    <!-- Add more details as needed -->
+  </div>
+
+  <!-- Center panel -->
+  <div class="center-panel">
+    <!-- Detailed information will go here -->
+  </div>
+
+  <!-- Right panel -->
+  <div class="right-panel">
+    <h2>Exécuter un playbook</h2>
+    <select [(ngModel)]="selectedPlaybook">
+      <option *ngFor="let playbook of playbooks" [value]="playbook.name">{{playbook.name}}</option>
+    </select>
+    <button (click)="runSelectedPlaybook()">Exécuter</button>
+  </div>
+</div>

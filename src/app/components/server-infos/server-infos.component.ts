@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import { ServerService } from '../../services/server/server.service';
 import { NgIf } from '@angular/common';
 import {ServerConfigureComponent} from '../server-configure/server-configure.component';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-server-infos',
@@ -12,20 +13,13 @@ import {ServerConfigureComponent} from '../server-configure/server-configure.com
 })
 export class ServerInfosComponent {
 
-  isConfigPanelOpen = false;
-
-  openConfigurationPanel() {
-    this.isConfigPanelOpen = true;
-  }
-
-  closePanel() {
-    this.isConfigPanelOpen = false;
-  }
 
   @Input("server")
   server: any;
 
-  constructor(protected serverService: ServerService) { }
+  constructor(
+    protected serverService: ServerService,
+    ) { }
 
   /**
    * Delete a server
@@ -35,5 +29,6 @@ export class ServerInfosComponent {
   deleteServer(serverName: string, serverProvider: string) {
     this.serverService.deleteServers(serverName, serverProvider);
   }
+
 
 }
