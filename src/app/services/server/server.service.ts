@@ -110,19 +110,18 @@ export class ServerService {
    */
 addProxmoxServer(serverData: any) {
     let server = {
-      //type: "proxmox",
       name: serverData.serverName,
       node_name: "infra",
       username: serverData.username,
       password: serverData.password,
       datastore_id: "local-lvm",
-      file_id: "local:iso/ubuntu-22.10-server-cloudimg-amd64.img",
+      file_id: serverData.os,
       interface: "virtio0",
       iothread: "true",
       discard: "on",
       size: serverData.diskSize,
       cores: serverData.cpu,
-      memory: serverData.cpu,
+      memory: serverData.memory,
       ipAddress: this._prefixIp + serverData.ipAddress,
     };
 
