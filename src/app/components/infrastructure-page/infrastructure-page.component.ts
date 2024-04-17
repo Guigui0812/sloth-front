@@ -16,23 +16,10 @@ export class InfrastructurePageComponent {
 
   protected _filteredProvider: string = '';
 
-  setFilteredProvider(target: any) {
-    this._filteredProvider = target.provider;
-  }
 
   constructor(
     protected serverService: ServerService,
-    protected router: Router
     ) { }
   @Input() server: any; // Le serveur à afficher
-  @Output() closeRequest = new EventEmitter();
 
-  close() {
-    this.closeRequest.emit();
-  }
-
-  onConfigureServer(server: any) {
-    this.serverService.setSelectedServer(server);
-    this.router.navigate(['/server-details']);
-  }
 }

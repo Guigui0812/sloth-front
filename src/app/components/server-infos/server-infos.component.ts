@@ -1,13 +1,12 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import { ServerService } from '../../services/server/server.service';
 import { NgIf } from '@angular/common';
-import {ServerConfigureComponent} from '../server-configure/server-configure.component';
 import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-server-infos',
   standalone: true,
-  imports: [NgIf, ServerConfigureComponent],
+  imports: [NgIf],
   templateUrl: './server-infos.component.html',
   styleUrl: './server-infos.component.css'
 })
@@ -19,6 +18,7 @@ export class ServerInfosComponent {
 
   constructor(
     protected serverService: ServerService,
+    protected router: Router
     ) { }
 
   /**
@@ -28,6 +28,10 @@ export class ServerInfosComponent {
    */
   deleteServer(serverName: string, serverProvider: string) {
     this.serverService.deleteServers(serverName, serverProvider);
+  }
+
+  configureServer(serverId: string) {
+    this.router.navigate(['/configure', serverId]);
   }
 
 

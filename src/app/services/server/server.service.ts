@@ -60,7 +60,7 @@ export class ServerService {
    * Refresh the server array
    */
   refreshServerArray() {
-    return this.http.get('http://127.0.0.1:8000/sloth/instances')
+    return this.http.get('http://10.18.0.253:8000/sloth/instances')
       .pipe(first())
       .subscribe((servers: any) => {
         this.serverArray = servers;
@@ -72,7 +72,7 @@ export class ServerService {
    * Refresh the playbook array
    */
   refreshPlaybookArray() {
-    return this.http.get('http://127.0.0.1:8000/sloth/configure')
+    return this.http.get('http://10.18.0.253:8000/sloth/configure')
       .pipe(first())
       .subscribe((playbooks: any) => {
         this.playbookArray = playbooks;
@@ -146,7 +146,7 @@ addProxmoxServer(serverData: any) {
     };
 
 
-    return this.http.post('http://127.0.0.1:8000/sloth/instances/proxmox', server)
+    return this.http.post('http://10.18.0.253:8000/sloth/instances/proxmox', server)
       .pipe(first())
       .subscribe({
         next: () => {
@@ -175,7 +175,7 @@ addProxmoxServer(serverData: any) {
 
     console.log("Server Spec : \n\t",server);
 
-    return this.http.post('http://127.0.0.1:8000/sloth/instances/aws', server)
+    return this.http.post('http://10.18.0.253:8000/sloth/instances/aws', server)
       .pipe(first())
       .subscribe({
         next: () => {
@@ -199,7 +199,7 @@ addProxmoxServer(serverData: any) {
     const server = this.serverLoadingStatus.find((s) => s.name === serverName);
     if (server) {
       server.loading = true;
-      this.http.delete(`http://127.0.0.1:8000/sloth/instances/Proxmox/${serverName}`).subscribe({
+      this.http.delete(`http://10.18.0.253:8000/sloth/instances/Proxmox/${serverName}`).subscribe({
         next: () => {
           server.loading = false;
           this.refreshServerArray();
@@ -223,7 +223,7 @@ addProxmoxServer(serverData: any) {
     const server = this.serverLoadingStatus.find((s) => s.name === serverName);
     if (server) {
       server.loading = true;
-      this.http.delete(`http://127.0.0.1:8000/sloth/instances/aws/${serverName}`)
+      this.http.delete(`http://10.18.0.253:8000/sloth/instances/aws/${serverName}`)
         .pipe(first())
           .subscribe({
             next: () => {
@@ -252,7 +252,7 @@ addProxmoxServer(serverData: any) {
       ip: host,
       playbook: playbookName
     };
-    const url = `http://127.0.0.1:8000/sloth/configure/${host}/${playbookName}`;
+    const url = `http://10.18.0.253:8000/sloth/configure/${host}/${playbookName}`;
     return this.http.post(url, playbook)
       .pipe(first())
       .subscribe({
@@ -281,6 +281,13 @@ addProxmoxServer(serverData: any) {
     return this.getServers().filter(server => server.provider === provider);
   }
 
+  /**
+   * Retrieve a server by its id
+   * @param id
+   */
+  getServerById(id: any) {
+    return this.serverArray.find((server) => server.id === id);
+  }
 
 
 
